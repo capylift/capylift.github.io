@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capylift Challenge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #FAF7F4; --card: #FFFFFF; --ink: #16130F; --muted: #5D564F;
+      --flame: #FF6A24; --flame-soft: #FFF3EB; --line: #EAE3DA;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--paper); color: var(--ink);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 24px; -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      width: 100%; max-width: 420px; background: var(--card);
+      border: 1px solid var(--line); border-radius: 28px;
+      padding: 36px 28px; text-align: center;
+      box-shadow: 0 24px 60px rgba(22,19,15,0.08);
+    }
+    .logo {
+      width: 64px; height: 64px; border-radius: 18px; background: #000;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 22px;
+    }
+    .logo img { width: 42px; height: 42px; object-fit: contain; }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace; font-weight: 600;
+      font-size: 12px; letter-spacing: 1.6px; color: var(--flame);
+      text-transform: uppercase; margin-bottom: 10px;
+    }
+    h1 { font-size: 27px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.15; }
+    p.sub { color: var(--muted); font-size: 15px; line-height: 1.5; margin-top: 12px; }
+    .code-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.4px;
+      color: var(--muted); text-transform: uppercase; margin: 26px 0 10px;
+    }
+    .cells { display: flex; gap: 8px; justify-content: center; }
+    .cell {
+      width: 44px; height: 54px; border: 1px solid var(--line); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 22px;
+      background: var(--paper);
+    }
+    .btn {
+      display: block; width: 100%; margin-top: 14px; padding: 17px;
+      border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer;
+      border: none; text-decoration: none; transition: transform .06s ease;
+    }
+    .btn:active { transform: scale(0.985); }
+    .btn-primary { background: var(--flame); color: var(--ink); }
+    .btn-secondary { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+    .btns { margin-top: 26px; }
+    .note { font-size: 13px; color: var(--muted); margin-top: 18px; line-height: 1.5; }
+    .home { margin-top: 22px; font-size: 14px; }
+    .home a { color: var(--flame); text-decoration: none; font-weight: 500; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo"><img src="/assets/logo.png" alt="Capylift" /></div>
+
+    <!-- Challenge invite (shown for /c/<CODE>) -->
+    <div id="invite" class="hidden">
+      <div class="eyebrow">Challenge invite</div>
+      <h1>You've been challenged on Capylift</h1>
+      <p class="sub">Get the app to join, then compete on a shared leaderboard. Your invite code is below — it still works after you install.</p>
+
+      <div class="code-label">Join code</div>
+      <div class="cells" id="cells"></div>
+
+      <div class="btns">
+        <a class="btn btn-primary" id="appstore" href="#">Get Capylift</a>
+        <a class="btn btn-secondary" id="openapp" href="#">Open in the app</a>
+      </div>
+      <p class="note">Already have Capylift? Tap “Open in the app”. New here? Install it, sign in, and enter the code above under Challenges → Join.</p>
+    </div>
+
+    <!-- Generic 404 (any other unknown path) -->
+    <div id="notfound" class="hidden">
+      <div class="eyebrow">Page not found</div>
+      <h1>This page took a rest day</h1>
+      <p class="sub">The link may be broken or the page may have moved.</p>
+      <div class="home"><a href="/">← Back to capylift.github.io</a></div>
+    </div>
+  </div>
+
+  <script>
+    // TODO: replace with the real App Store URL once the app is live.
+    var APP_STORE_URL = "https://capylift.github.io/";
+
+    (function () {
+      var path = location.pathname || "";
+      // Match /c/<CODE> (case-insensitive), allowing a trailing slash.
+      var m = path.match(/\/c\/([A-Za-z0-9]{4,10})\/?$/);
+      var code = m ? m[1].toUpperCase() : null;
+
+      if (code) {
+        document.getElementById("invite").classList.remove("hidden");
+        // Render the code cells.
+        var cells = document.getElementById("cells");
+        code.split("").forEach(function (ch) {
+          var d = document.createElement("div");
+          d.className = "cell";
+          d.textContent = ch;
+          cells.appendChild(d);
+        });
+        document.getElementById("appstore").href = APP_STORE_URL;
+        // Custom scheme fallback for users who already have the app installed
+        // but reached the web page (e.g. universal link not yet associated).
+        document.getElementById("openapp").href = "capylift://c/" + code;
+        document.title = "Join a Capylift challenge · " + code;
+      } else {
+        document.getElementById("notfound").classList.remove("hidden");
+      }
+    })();
+  </script>
+</body>
+</html>
