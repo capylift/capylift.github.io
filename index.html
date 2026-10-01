@@ -10,285 +10,464 @@
 <meta property="og:description" content="A coach plans your week. You get the final say on all of it.">
 <meta property="og:image" content="/assets/logo.png">
 <meta property="og:type" content="website">
+<meta name="theme-color" content="#000000">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 
 <style>
+  :root {
+    --bg: #000000; --card: #0E1013; --sunken: #171A1E; --line: rgba(250,247,244,0.10); --line-2: rgba(250,247,244,0.18);
+    --paper: #FAF7F4; --muted: rgba(250,247,244,0.62); --faint: rgba(250,247,244,0.42);
+    --flame: #FF6A24; --flame-2: #FF9556; --flame-deep: #E8511C;
+    --ease: cubic-bezier(.2,.8,.2,1);
+    --wrap: 1180px; --pad: clamp(20px,4vw,32px);
+  }
   * { box-sizing: border-box; }
-  body { margin: 0; background: #FAF7F4; color: #16130F; font-family: 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  a { color: #E8511C; text-decoration: none; }
-  a:hover { color: #B93C11; }
-  @keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--paper); font-family: 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--pad); }
+  .mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.14em; text-transform: uppercase; }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.16em; color: var(--flame-2); }
+  .flame { color: var(--flame); }
 
-  /* interactive states (the design tool used a custom style-hover attr) */
-  .navlink { font-size:15px; font-weight:500; color:#5D564F; cursor:pointer; transition:color .16s ease; }
-  .navlink:hover, .navlink.active { color:#16130F; }
-  .btn-dark { transition:background .16s ease; }
-  .btn-dark:hover { background:#2A241E !important; }
-  .flink { color:rgba(250,247,244,0.8); cursor:pointer; transition:color .16s ease; }
-  .flink:hover { color:#FAF7F4; }
-  .plain { color:inherit; }
-  .plain:hover { color:inherit; }
+  /* ---------- scroll progress + background atmosphere ---------- */
+  #progress { position: fixed; top: 0; left: 0; height: 2px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--flame-deep), var(--flame-2)); z-index: 100; }
+  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: .05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  #cursor-glow { position: fixed; width: 520px; height: 520px; border-radius: 50%; pointer-events: none; z-index: 0; left: 0; top: 0;
+    background: radial-gradient(circle, rgba(255,106,36,0.10), transparent 62%); transform: translate(-50%,-50%); opacity: 0; transition: opacity .4s; }
+  main, header, footer { position: relative; z-index: 2; }
 
+  /* ---------- header ---------- */
+  header { position: sticky; top: 0; z-index: 50; transition: background .3s, border-color .3s; border-bottom: 1px solid transparent; }
+  header.scrolled { background: rgba(0,0,0,0.72); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom-color: var(--line); }
+  .nav { min-height: 74px; display: flex; align-items: center; flex-wrap: wrap; gap: 14px 28px; }
+  .brand { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+  .brand .icon { width: 38px; height: 38px; border-radius: 10px; overflow: hidden; background: #000; box-shadow: 0 0 0 1px var(--line); }
+  .brand b { font-size: 21px; letter-spacing: -0.03em; }
+  .navlinks { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 26px; }
+  .navlink { font-size: 15px; font-weight: 500; color: var(--muted); position: relative; transition: color .2s; }
+  .navlink::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: var(--flame); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease); }
+  .navlink:hover, .navlink.active { color: var(--paper); }
+  .navlink:hover::after, .navlink.active::after { transform: scaleX(1); }
 
+  /* ---------- buttons ---------- */
+  .btn { height: 44px; padding: 0 20px; border-radius: 14px; display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform .25s var(--ease), box-shadow .25s, background .25s; will-change: transform; }
+  .btn-flame { background: var(--flame); color: #000; box-shadow: 0 10px 30px -8px rgba(255,106,36,.55); }
+  .btn-flame:hover { box-shadow: 0 16px 40px -8px rgba(255,106,36,.8); }
+  .store { height: 60px; padding: 0 22px; border-radius: 16px; display: inline-flex; align-items: center; gap: 12px; background: var(--paper); color: #000; transition: transform .25s var(--ease), box-shadow .25s; will-change: transform; }
+  .store.ghost { background: transparent; color: var(--paper); box-shadow: inset 0 0 0 1px var(--line-2); }
+  .store:hover { box-shadow: 0 18px 40px -12px rgba(255,106,36,.55); }
+  .store.ghost:hover { box-shadow: inset 0 0 0 1px var(--flame), 0 18px 40px -14px rgba(255,106,36,.5); }
+  .store small { display: block; font-size: 10px; font-weight: 500; letter-spacing: .04em; opacity: .7; }
+  .store strong { display: block; font-size: 18px; letter-spacing: -.02em; line-height: 1.05; }
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; padding: clamp(40px,7vw,90px) 0 clamp(60px,8vw,100px); }
+  .hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px,100%),1fr)); gap: clamp(40px,6vw,72px); align-items: center; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+  .orb.a { width: 520px; height: 520px; right: -80px; top: 40px; background: radial-gradient(circle, rgba(255,106,36,.45), transparent 65%); animation: drift 14s ease-in-out infinite; }
+  .orb.b { width: 360px; height: 360px; left: -120px; top: 320px; background: radial-gradient(circle, rgba(232,81,28,.28), transparent 65%); animation: drift 18s ease-in-out infinite reverse; }
+  @keyframes drift { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(-40px,30px) scale(1.08); } 66% { transform: translate(30px,-20px) scale(.95); } }
+  .gridlines { position: absolute; inset: 0; pointer-events: none; opacity: .5;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px; mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, transparent 65%); -webkit-mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, transparent 65%); }
+  .pill { display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px 7px 10px; border-radius: 999px; background: rgba(255,106,36,.10); box-shadow: inset 0 0 0 1px rgba(255,106,36,.35); }
+  .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--flame); box-shadow: 0 0 0 0 rgba(255,106,36,.7); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,106,36,.6); } 70% { box-shadow: 0 0 0 10px rgba(255,106,36,0); } 100% { box-shadow: 0 0 0 0 rgba(255,106,36,0); } }
+  h1 { margin: 22px 0 0; font-size: clamp(40px,6.2vw,76px); line-height: 1.0; font-weight: 700; letter-spacing: -0.045em; }
+  h1 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; }
+  h1 .w > span { display: inline-block; transform: translateY(110%); transition: transform .9s var(--ease); }
+  h1.in .w > span { transform: none; }
+  .lede { margin: 24px 0 0; font-size: clamp(17px,1.8vw,20px); line-height: 1.55; color: var(--muted); max-width: 50ch; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 28px; font-size: 11px; color: var(--faint); }
+
+  .stage { position: relative; height: clamp(520px,58vw,640px); perspective: 1400px; }
+  .tilt { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .6s var(--ease); }
+  .phone { border-radius: 46px; padding: 9px; background: linear-gradient(160deg,#2a2a2e,#0b0b0d 40%,#000); box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 50px 100px -30px rgba(0,0,0,.9), 0 30px 80px -40px rgba(255,106,36,.45); }
+  .phone img { border-radius: 38px; width: 100%; }
+  .stage .p-main { position: absolute; width: min(300px,62%); left: 50%; top: 50%; transform: translate(-30%,-50%) translateZ(60px); z-index: 3; }
+  .stage .p-back { position: absolute; width: min(230px,48%); left: 50%; top: 50%; transform: translate(-112%,-44%) rotate(-7deg) translateZ(0); z-index: 2; opacity: .9; }
+  .float { animation: bob 6s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -12px; } }
+  .badge { position: absolute; z-index: 4; display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 16px; background: rgba(14,16,19,.78); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px var(--line-2), 0 20px 40px -18px rgba(0,0,0,.8); font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .badge .ic { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; background: rgba(255,106,36,.16); color: var(--flame); font-size: 14px; }
+  .badge small { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: .12em; color: var(--faint); font-weight: 500; }
+  .badge { transform: translateZ(110px); }
+  .b1 { right: -2%; top: 12%; animation: bob 5s ease-in-out infinite; }
+  .b2 { left: 0; bottom: 18%; animation: bob 7s ease-in-out infinite .8s; }
+  .b3 { right: -1%; bottom: 10%; animation: bob 6s ease-in-out infinite 1.6s; }
+  @media (max-width: 640px) {
+    .stage { height: 600px; }
+    .stage .p-main { width: 236px; transform: translate(-38%,-50%) translateZ(60px); }
+    .stage .p-back { width: 178px; transform: translate(-104%,-44%) rotate(-7deg); }
+    .b1 { right: 0; top: 4%; } .b2 { left: 0; bottom: 8%; } .b3 { right: 0; bottom: 2%; }
+    .badge { font-size: 12px; padding: 9px 12px; }
+  }
+
+  /* ---------- marquee ---------- */
+  .marquee { position: relative; overflow: hidden; border-block: 1px solid var(--line); padding: 20px 0; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .track { display: flex; gap: 48px; width: max-content; animation: scroll 38s linear infinite; }
+  .track span { font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .16em; color: var(--faint); display: flex; align-items: center; gap: 48px; white-space: nowrap; }
+  .track span::after { content: "✦"; color: var(--flame); }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* ---------- reveal system ---------- */
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: var(--d, 0s); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.left { transform: translateX(-40px); } .reveal.right { transform: translateX(40px); }
+  .reveal.left.in, .reveal.right.in { transform: none; }
+
+  /* ---------- value cards ---------- */
+  section { padding: clamp(70px,10vw,130px) 0 0; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(270px,100%),1fr)); gap: 18px; }
+  .card { position: relative; padding: 30px; border-radius: 24px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; transition: transform .4s var(--ease); }
+  .card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; opacity: 0; transition: opacity .3s;
+    background: radial-gradient(260px circle at var(--mx,50%) var(--my,50%), rgba(255,106,36,.9), transparent 60%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s; background: radial-gradient(320px circle at var(--mx,50%) var(--my,50%), rgba(255,106,36,.10), transparent 60%); }
+  .card:hover { transform: translateY(-6px); }
+  .card:hover::before, .card:hover::after { opacity: 1; }
+  .card .k { font-size: 11px; color: var(--faint); }
+  .card h3 { font-size: 23px; letter-spacing: -.02em; margin: 10px 0 10px; }
+  .card p { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--muted); }
+  .card .num { position: absolute; right: 22px; top: 18px; font-size: 56px; font-weight: 700; letter-spacing: -.05em; color: rgba(250,247,244,.05); }
+
+  /* ---------- stats strip ---------- */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px,100%),1fr)); gap: 18px; }
+  .stat { padding: 28px 30px; border-radius: 24px; background: linear-gradient(180deg, rgba(255,106,36,.10), rgba(255,106,36,0) 70%), var(--card); box-shadow: inset 0 0 0 1px var(--line); }
+  .stat .v { font-size: clamp(44px,5vw,60px); font-weight: 700; letter-spacing: -.05em; line-height: 1; }
+  .stat .v em { font-style: normal; color: var(--flame); }
+  .stat .l { margin-top: 10px; color: var(--muted); font-size: 15px; }
+
+  /* ---------- feature rows ---------- */
+  .features { display: flex; flex-direction: column; gap: clamp(90px,12vw,150px); }
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px,100%),1fr)); gap: clamp(40px,6vw,80px); align-items: center; }
+  .row h2 { margin: 16px 0 0; font-size: clamp(32px,4.4vw,52px); line-height: 1.04; font-weight: 700; letter-spacing: -.04em; }
+  .row p { margin: 20px 0 0; font-size: 17.5px; line-height: 1.65; color: var(--muted); max-width: 52ch; }
+  .ticks { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-direction: column; gap: 12px; }
+  .ticks li { display: flex; gap: 14px; align-items: flex-start; font-size: 16px; line-height: 1.5; }
+  .ticks li::before { content: ""; flex: none; width: 20px; height: 20px; margin-top: 1px; border-radius: 7px; background: rgba(255,106,36,.14) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.5l3 3 6-7' fill='none' stroke='%23FF6A24' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat; box-shadow: inset 0 0 0 1px rgba(255,106,36,.35); }
+  .shot { position: relative; display: flex; justify-content: center; }
+  .shot .halo { position: absolute; width: 90%; aspect-ratio: 1; top: 50%; left: 50%; transform: translate(-50%,-50%); border-radius: 50%; background: radial-gradient(circle, rgba(255,106,36,.28), transparent 62%); filter: blur(30px); }
+  .shot .ring { position: absolute; width: 74%; aspect-ratio: 1; top: 50%; left: 50%; transform: translate(-50%,-50%); border-radius: 50%; box-shadow: inset 0 0 0 1px var(--line); animation: spin 40s linear infinite; }
+  .shot .ring::after { content: ""; position: absolute; top: -4px; left: 50%; width: 8px; height: 8px; border-radius: 50%; background: var(--flame); box-shadow: 0 0 16px var(--flame); }
+  @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+  .shot .phone { position: relative; width: min(300px,82%); }
+  .row.flip .copy { order: 2; }
+  @media (max-width: 760px) { .row.flip .copy { order: 0; } }
+
+  /* form-check scan effect */
+  .scan { position: absolute; inset: 9px; border-radius: 38px; overflow: hidden; pointer-events: none; }
+  .scan::before { content: ""; position: absolute; left: 0; right: 0; height: 26%; top: -26%; background: linear-gradient(180deg, transparent, rgba(255,106,36,.20) 70%, rgba(255,106,36,.65)); animation: scan 3.4s var(--ease) infinite; }
+  .scan::after { content: "LIVE"; position: absolute; top: 18%; right: 9%; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .16em; font-weight: 600; color: #000; background: var(--flame); padding: 4px 8px; border-radius: 6px; animation: blink 1.6s steps(1) infinite; }
+  @keyframes scan { 0% { top: -26%; } 60%,100% { top: 100%; } }
+  @keyframes blink { 50% { opacity: .35; } }
+
+  /* ---------- how it works ---------- */
+  .how { margin-top: clamp(90px,12vw,150px); padding: clamp(70px,10vw,120px) 0; background: radial-gradient(ellipse at 50% 0%, rgba(255,106,36,.14), transparent 60%), #07080A; border-block: 1px solid var(--line); }
+  .how h2 { margin: 16px 0 0; font-size: clamp(32px,4.6vw,54px); letter-spacing: -.04em; line-height: 1.04; }
+  .steps { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(270px,100%),1fr)); gap: 22px; margin-top: 64px; }
+  .stepline { position: absolute; left: 30px; right: 30px; top: 46px; height: 1px; background: var(--line); }
+  .stepline i { position: absolute; inset: 0; background: linear-gradient(90deg, var(--flame-deep), var(--flame-2)); transform-origin: left; transform: scaleX(0); transition: transform 1.8s var(--ease); }
+  .steps.in .stepline i { transform: scaleX(1); }
+  .step { position: relative; padding: 30px; border-radius: 24px; background: rgba(250,247,244,.04); box-shadow: inset 0 0 0 1px var(--line); }
+  .step .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #000; box-shadow: inset 0 0 0 1px rgba(255,106,36,.6), 0 0 22px rgba(255,106,36,.35); color: var(--flame); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; }
+  .step h3 { font-size: 21px; letter-spacing: -.02em; margin: 22px 0 8px; }
+  .step p { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--muted); }
+  @media (max-width: 860px) { .stepline { display: none; } }
+
+  /* ---------- CTA ---------- */
+  .cta { position: relative; overflow: hidden; border-radius: 34px; padding: clamp(36px,6vw,72px); background: radial-gradient(circle at 15% 50%, rgba(255,106,36,.32), transparent 55%), linear-gradient(135deg, #15100C, #0B0B0D); box-shadow: inset 0 0 0 1px rgba(255,106,36,.25); display: flex; flex-wrap: wrap; align-items: center; gap: clamp(28px,5vw,56px); }
+  .cta .logo { width: 150px; height: 150px; flex: none; border-radius: 36px; overflow: hidden; background: #000; box-shadow: 0 0 0 1px var(--line-2), 0 30px 60px -20px rgba(255,106,36,.6); animation: bob 5s ease-in-out infinite; }
+  .cta h2 { margin: 0; font-size: clamp(34px,4.8vw,58px); letter-spacing: -.045em; line-height: 1; }
+  .cta p { margin: 14px 0 0; font-size: 17.5px; line-height: 1.55; color: var(--muted); max-width: 46ch; }
+
+  /* ---------- footer ---------- */
+  footer { margin-top: clamp(80px,10vw,120px); border-top: 1px solid var(--line); background: #050506; }
+  .fgrid { padding: clamp(48px,6vw,70px) 0 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px,100%),1fr)); gap: 40px; }
+  .fhead { font-size: 10px; color: var(--faint); }
+  .flinks { display: flex; flex-direction: column; gap: 11px; margin-top: 16px; font-size: 15px; }
+  .flink { color: var(--muted); transition: color .2s; cursor: pointer; } .flink:hover { color: var(--paper); }
+  .fbar { border-top: 1px solid var(--line); padding: 22px 0 46px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; font-size: 10px; color: var(--faint); }
+  .bigword { font-size: clamp(80px,18vw,240px); font-weight: 700; letter-spacing: -.06em; line-height: .8; text-align: center; padding-top: 40px; color: transparent; -webkit-text-stroke: 1px rgba(250,247,244,.10); user-select: none; overflow: hidden; }
+  .bigword span { color: var(--flame); -webkit-text-stroke: 0; }
+
+  /* ---------- reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal, h1 .w > span { opacity: 1 !important; transform: none !important; }
+    .stepline i { transform: scaleX(1); }
+    html { scroll-behavior: auto; }
+  }
 </style>
 </head>
 <body>
+<div id="progress"></div>
+<div class="grain" aria-hidden="true"></div>
+<div id="cursor-glow" aria-hidden="true"></div>
 
-<div style="min-height:100vh; display:flex; flex-direction:column;">
+<header id="top">
+  <div class="wrap nav">
+    <a href="/" class="brand"><span class="icon"><img src="/assets/logo.png" alt="Capylift" width="38" height="38"></span><b>capylift<span class="flame">.</span></b></a>
+    <nav class="navlinks">
+      <a href="/" class="navlink active">Features</a>
+      <a href="/support/" class="navlink">Help &amp; support</a>
+      <a href="/privacy/" class="navlink">Privacy</a>
+      <a href="/terms/" class="navlink">Terms</a>
+      <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" class="btn btn-flame magnetic" aria-label="Get the app">Get the app</a>
+    </nav>
+  </div>
+</header>
 
-<header style="position:sticky; top:0; z-index:50; background:rgba(250,247,244,0.88); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
-    <div style="max-width:1160px; margin:0 auto; padding:12px clamp(16px,4vw,32px); min-height:74px; display:flex; align-items:center; flex-wrap:wrap; gap:16px 28px;">
-      <a href="/" class="plain" style="display:flex; align-items:center; gap:10px; margin-right:auto;">
-        <span style="width:38px; height:38px; flex:none; border-radius:10px; background:#000000; overflow:hidden; display:flex;"><img src="/assets/logo.png" alt="Capylift" style="width:38px; height:38px; object-fit:contain; display:block;"></span>
-        <span style="font-size:21px; font-weight:700; letter-spacing:-0.03em;">capylift<span style="color:#FF6A24;">.</span></span>
-      </a>
-      <nav style="display:flex; align-items:center; flex-wrap:wrap; gap:12px 24px;">
-        <a href="/" data-nav="home" class="navlink plain active">Features</a>
-        <a href="/support/" data-nav="support" class="navlink plain">Help &amp; support</a>
-        <a href="/privacy/" data-nav="privacy" class="navlink plain">Privacy</a>
-        <a href="/terms/" data-nav="terms" class="navlink plain">Terms</a>
-        <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" aria-label="Get the app" class="btn-dark" style="height:38px; padding:0 20px; border-radius:14px; background:#16130F; color:#FAF7F4; display:flex; align-items:center; font-size:15px; font-weight:700; cursor:pointer;">Get the app</a>
-      </nav>
-    </div>
-  </header>
-
-  <main style="flex:1;">
-
-    <div class="route" id="route-home">
-
-      <section style="max-width:1160px; margin:0 auto; padding:clamp(48px,7vw,88px) clamp(20px,4vw,32px) 0; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr)); gap:clamp(32px,5vw,56px); align-items:center;">
-        <div>
-          <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; letter-spacing:0.14em; color:#B4470F;">AI STRENGTH COACH</div>
-          <h1 style="margin:16px 0 0; font-size:clamp(34px,5.4vw,62px); line-height:1.04; font-weight:700; letter-spacing:-0.035em; text-wrap:balance;">A coach plans your week. You get the final say on all of it.</h1>
-          <p style="margin:20px 0 0; font-size:clamp(16px,1.8vw,19px); line-height:1.55; color:#5D564F; max-width:52ch; text-wrap:pretty;">Capylift builds real training around your goal, your kit and the days you show up. Swap a session, drop a set, move a day — it adapts to how you train instead of arguing with you.</p>
-          <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:32px;">
-            <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" aria-label="Download on the App Store" class="btn-dark" style="height:58px; padding:0 22px; border-radius:14px; background:#16130F; color:#FAF7F4; display:flex; align-items:center; gap:12px; cursor:pointer;">
-              <svg width="24" height="28" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true" style="flex:none;"><path d="M19.7 14.9c0-3 2.4-4.4 2.5-4.5-1.4-2-3.5-2.3-4.3-2.3-1.8-.2-3.5 1.1-4.5 1.1-.9 0-2.3-1.1-3.8-1-2 0-3.8 1.1-4.8 2.9-2 3.5-.5 8.8 1.5 11.7 1 1.4 2.1 3 3.6 2.9 1.5-.1 2-.9 3.8-.9s2.3.9 3.8.9c1.6 0 2.6-1.4 3.5-2.9 1.1-1.6 1.6-3.2 1.6-3.3 0 0-3-1.2-3-4.6zM16.8 5.9c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.7.8-3.5 1.8-.8.9-1.5 2.3-1.3 3.7 1.3.1 2.7-.7 3.6-1.7z"></path></svg>
-              <span style="display:flex; flex-direction:column; align-items:flex-start; line-height:1.1;">
-                <span style="font-size:10px; font-weight:500; letter-spacing:0.04em; opacity:0.7;">Download on the</span>
-                <span style="font-size:18px; font-weight:700; letter-spacing:-0.02em;">App Store</span>
-              </span>
-            </a>
-            <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" aria-label="GET IT ON Google Play" class="btn-dark" style="height:58px; padding:0 22px; border-radius:14px; background:#16130F; color:#FAF7F4; display:flex; align-items:center; gap:12px; cursor:pointer;">
-              <svg width="24" height="26" viewBox="0 0 24 26" aria-hidden="true" style="flex:none;"><path d="M2.1 1.3C1.7 1.7 1.5 2.3 1.5 3.1v19.8c0 .8.2 1.4.6 1.8l.1.1L13.3 13.7v-.3L2.2 1.2l-.1.1z" fill="#EA4335"></path><path d="M17 17.4l-3.7-3.7v-.3l3.7-3.7.1.1 4.4 2.5c1.3.7 1.3 1.9 0 2.6l-4.4 2.5h-.1z" fill="#FBBC04"></path><path d="M17.1 17.3L13.3 13.5 2.1 24.8c.4.5 1.1.5 1.9.1l13.1-7.6z" fill="#34A853"></path><path d="M17.1 9.8L4 2.2c-.8-.4-1.5-.4-1.9.1l11.2 11.2 3.8-3.7z" fill="#4285F4"></path></svg>
-              <span style="display:flex; flex-direction:column; align-items:flex-start; line-height:1.1;">
-                <span style="font-size:10px; font-weight:500; letter-spacing:0.04em; opacity:0.7;">GET IT ON</span>
-                <span style="font-size:18px; font-weight:700; letter-spacing:-0.02em;">Google Play</span>
-              </span>
-            </a>
-          </div>
-          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px 20px; margin-top:26px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; color:#8A8178;">
-            <span>FREE TO START</span><span>·</span><span>NO EQUIPMENT NEEDED</span><span>·</span><span>FORM CHECK ON YOUR PHONE</span>
-          </div>
-        </div>
-        <div style="position:relative; display:flex; justify-content:center;">
-          <div style="position:absolute; width:min(460px,90%); aspect-ratio:1; border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(255,106,36,0.18) 0%, rgba(255,106,36,0.05) 48%, transparent 70%);"></div>
-          <div style="position:relative; display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-end; gap:16px;">
-            <div style="width:min(214px,44%); border-radius:34px; overflow:hidden; border:1px solid #EAE3DA; box-shadow:0 24px 50px rgba(22,19,15,0.14); margin-right:-56px; margin-bottom:44px;">
-              <img src="/assets/coach2.png" alt="Capylift AI coach" style="width:100%; display:block;">
-            </div>
-            <div style="position:relative; width:min(296px,60%); border-radius:42px; overflow:hidden; border:1px solid #EAE3DA; box-shadow:0 40px 80px rgba(22,19,15,0.2); z-index:2;">
-              <img src="/assets/session1.jpg" alt="Today's session" style="width:100%; display:block;">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style="max-width:1160px; margin:0 auto; padding:clamp(56px,8vw,96px) clamp(20px,4vw,32px) 0;">
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(258px,100%),1fr)); gap:20px;">
-          <div style="padding:26px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#8A8178;">A REAL PROGRAMME</div>
-            <div style="font-size:21px; font-weight:700; letter-spacing:-0.02em; margin:8px 0;">Built around you</div>
-            <div style="font-size:15px; line-height:1.55; color:#5D564F; text-wrap:pretty;">Goal, kit and the days you can train go in. A structured week comes out — not a list of random exercises.</div>
-          </div>
-          <div style="padding:26px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#8A8178;">YOURS TO CHANGE</div>
-            <div style="font-size:21px; font-weight:700; letter-spacing:-0.02em; margin:8px 0;">Adapts to your way</div>
-            <div style="font-size:15px; line-height:1.55; color:#5D564F; text-wrap:pretty;">Edit any session, set or load and the coach plans around your version. It never quietly reverts your changes.</div>
-          </div>
-          <div style="padding:26px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#8A8178;">NOTHING LOST</div>
-            <div style="font-size:21px; font-weight:700; letter-spacing:-0.02em; margin:8px 0;">Everything tracked</div>
-            <div style="font-size:15px; line-height:1.55; color:#5D564F; text-wrap:pretty;">Volume, loads, streaks and per-exercise trends, so progress is a number rather than a feeling.</div>
-          </div>
-        </div>
-      </section>
-
-      <section style="max-width:1160px; margin:0 auto; padding:clamp(64px,9vw,110px) clamp(20px,4vw,32px) 0; display:flex; flex-direction:column; gap:clamp(64px,9vw,110px);">
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr)); gap:clamp(32px,5vw,64px); align-items:center;">
-          <div style="order:1;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#B4470F;">YOUR AI COACH</div>
-            <h2 style="margin:14px 0 0; font-size:clamp(28px,3.8vw,40px); line-height:1.1; font-weight:700; letter-spacing:-0.03em; text-wrap:balance;">It suggests the work, and tells you why.</h2>
-            <p style="margin:16px 0 0; font-size:17px; line-height:1.6; color:#5D564F; text-wrap:pretty;">The coach reads every session you log and every form check you run. Ask how your lifts are trending and it answers from your own history with a chart of your real numbers. Ask for a tweak and it proposes a specific change, like a heavier row on Monday or a swapped exercise. Nothing changes until you tap Apply.</p>
-            <div style="display:flex; flex-direction:column; gap:10px; margin-top:22px;">
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Ask from the Coach tab or straight from Home</span></div>
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Proposes swaps, load changes and new days, applied in one tap</span></div>
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Progress charts built from what you actually lifted</span></div>
-            </div>
-          </div>
-          <div style="order:2; display:flex; justify-content:center;">
-            <div style="width:min(284px,100%); border-radius:40px; overflow:hidden; border:1px solid #EAE3DA; box-shadow:0 30px 60px rgba(22,19,15,0.14);">
-              <img src="/assets/coach1.png" alt="It suggests the work, and tells you why." style="width:100%; display:block;">
-            </div>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr)); gap:clamp(32px,5vw,64px); align-items:center;">
-          <div style="order:2;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#B4470F;">IN THE SET</div>
-            <h2 style="margin:14px 0 0; font-size:clamp(28px,3.8vw,40px); line-height:1.1; font-weight:700; letter-spacing:-0.03em; text-wrap:balance;">One exercise. One tap per set.</h2>
-            <p style="margin:16px 0 0; font-size:17px; line-height:1.6; color:#5D564F; text-wrap:pretty;">The screen holds exactly what you are doing now: the movement, a demo loop of it, and one big button. Pick your weight, start the set, rest, start the next one. The rest timer starts itself, and you can stop it whenever you are ready.</p>
-            <div style="display:flex; flex-direction:column; gap:10px; margin-top:22px;">
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Set your weight before every set</span></div>
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Rest timer starts itself, stop it any time</span></div>
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">A demo loop for every movement</span></div>
-            </div>
-          </div>
-          <div style="order:1; display:flex; justify-content:center;">
-            <div style="width:min(284px,100%); border-radius:40px; overflow:hidden; border:1px solid #EAE3DA; box-shadow:0 30px 60px rgba(22,19,15,0.14);">
-              <img src="/assets/session2.png" alt="Prefer it your way? Change anything." style="width:100%; display:block;">
-            </div>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr)); gap:clamp(32px,5vw,64px); align-items:center;">
-          <div style="order:1;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#B4470F;">WORKOUT TRACKING</div>
-            <h2 style="margin:14px 0 0; font-size:clamp(28px,3.8vw,40px); line-height:1.1; font-weight:700; letter-spacing:-0.03em; text-wrap:balance;">Every set counted, and compared.</h2>
-            <p style="margin:16px 0 0; font-size:17px; line-height:1.6; color:#5D564F; text-wrap:pretty;">Volume by day, this week against last, weekly targets and your calorie trend, all built from what you actually lifted. A muscle heatmap shows what you have trained, and awards for streaks, PBs and workout milestones keep the next goal in sight.</p>
-            <div style="display:flex; flex-direction:column; gap:10px; margin-top:22px;">
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Sessions, reps and minutes against weekly targets</span></div>
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Top exercises and a front-and-back muscle heatmap</span></div>
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Awards for 7, 14 and 30-day streaks, PBs and milestones</span></div>
-            </div>
-          </div>
-          <div style="order:2; display:flex; justify-content:center;">
-            <div style="width:min(284px,100%); border-radius:40px; overflow:hidden; border:1px solid #EAE3DA; box-shadow:0 30px 60px rgba(22,19,15,0.14);">
-              <img src="/assets/stat.png" alt="Every set counted, and compared." style="width:100%; display:block;">
-            </div>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr)); gap:clamp(32px,5vw,64px); align-items:center;">
-          <div style="order:2;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#B4470F;">FORM CHECK — OPTIONAL</div>
-            <h2 style="margin:14px 0 0; font-size:clamp(28px,3.8vw,40px); line-height:1.1; font-weight:700; letter-spacing:-0.03em; text-wrap:balance;">And when you want it, a second pair of eyes.</h2>
-            <p style="margin:16px 0 0; font-size:17px; line-height:1.6; color:#5D564F; text-wrap:pretty;">Prop up your phone and step into the outline. When Capylift can see your whole body, the set starts on its own. It counts every rep and gives one short correction at a time, like “chest up, look forward”, on screen and out loud. Use it on a new movement, skip it on the ones you own. Nothing is recorded: the feed is read live, frame by frame, and never saved.</p>
-            <div style="display:flex; flex-direction:column; gap:10px; margin-top:22px;">
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Counts reps and checks depth, back position and balance</span></div>
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Results feed straight back to the coach</span></div>
-              <div style="display:flex; gap:12px; align-items:flex-start;"><span style="width:7px; height:7px; border-radius:7px; background:#E8511C; margin-top:9px; flex:none;"></span><span style="font-size:16px; line-height:1.5; color:#16130F;">Live only — no video is captured or stored</span></div>
-            </div>
-          </div>
-          <div style="order:1; display:flex; justify-content:center;">
-            <div style="width:min(284px,100%); border-radius:40px; overflow:hidden; border:1px solid #EAE3DA; box-shadow:0 30px 60px rgba(22,19,15,0.14);">
-              <img src="/assets/formcheck.jpg" alt="Live form check: Capylift tracks your squat and cues you to keep your chest up" style="width:100%; display:block;">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style="margin-top:120px; background:#16130F; color:#FAF7F4;">
-        <div style="max-width:1160px; margin:0 auto; padding:clamp(56px,8vw,96px) clamp(20px,4vw,32px);">
-          <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#FF8C4B;">HOW IT WORKS</div>
-          <h2 style="margin:14px 0 56px; font-size:clamp(30px,4.2vw,44px); font-weight:700; letter-spacing:-0.03em;">Three minutes to your first set.</h2>
-          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(258px,100%),1fr)); gap:28px;">
-            <div style="padding:28px; border-radius:24px; background:rgba(250,247,244,0.06);">
-              <div style="font-size:34px; font-weight:700; letter-spacing:-0.03em; color:#FF8C4B;">01</div>
-              <div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:12px 0 8px;">Answer a few quick questions</div>
-              <div style="font-size:15px; line-height:1.55; color:rgba(250,247,244,0.62); text-wrap:pretty;">Your goal, experience, measurements, days a week and the kit you own. One tap per answer, about two minutes.</div>
-            </div>
-            <div style="padding:28px; border-radius:24px; background:rgba(250,247,244,0.06);">
-              <div style="font-size:34px; font-weight:700; letter-spacing:-0.03em; color:#FF8C4B;">02</div>
-              <div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:12px 0 8px;">Get your week</div>
-              <div style="font-size:15px; line-height:1.55; color:rgba(250,247,244,0.62); text-wrap:pretty;">A structured programme with real sessions on real days. Change any of it before you start.</div>
-            </div>
-            <div style="padding:28px; border-radius:24px; background:rgba(250,247,244,0.06);">
-              <div style="font-size:34px; font-weight:700; letter-spacing:-0.03em; color:#FF8C4B;">03</div>
-              <div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:12px 0 8px;">Train and log</div>
-              <div style="font-size:15px; line-height:1.55; color:rgba(250,247,244,0.62); text-wrap:pretty;">Log every set with one tap. The coach reads what you lifted and suggests changes to your plan, which you approve. Add a form check whenever you want one.</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style="max-width:1160px; margin:0 auto; padding:clamp(56px,8vw,96px) clamp(20px,4vw,32px);">
-        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:clamp(24px,4vw,40px); padding:clamp(26px,4vw,44px); border-radius:30px; background:linear-gradient(180deg,#FFF3EB,#FFFFFF); border:1px solid #F3DDCD;">
-          <div style="width:150px; height:150px; flex:none; border-radius:34px; background:#000000; overflow:hidden; box-shadow:0 22px 46px rgba(22,19,15,0.20);">
-            <img src="/assets/logo.png" alt="" style="width:150px; height:150px; object-fit:contain; display:block; animation:floatY 5s ease-in-out infinite;">
-          </div>
-          <div style="flex:1 1 300px; min-width:0;">
-            <h2 style="margin:0; font-size:clamp(26px,3.4vw,36px); font-weight:700; letter-spacing:-0.03em; text-wrap:balance;">Lift heavy. Stay chill.</h2>
-            <p style="margin:10px 0 0; font-size:17px; line-height:1.55; color:#5D564F; max-width:56ch; text-wrap:pretty;">A coach that builds your week, tracks every set, and keeps up when life gets in the way. Free to start.</p>
-          </div>
-          <div style="display:flex; flex-wrap:wrap; gap:10px;">
-            <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" aria-label="Download on the App Store" class="btn-dark" style="height:58px; padding:0 20px; border-radius:14px; background:#16130F; color:#FAF7F4; display:flex; align-items:center; gap:11px; cursor:pointer;">
-              <svg width="22" height="26" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true" style="flex:none;"><path d="M19.7 14.9c0-3 2.4-4.4 2.5-4.5-1.4-2-3.5-2.3-4.3-2.3-1.8-.2-3.5 1.1-4.5 1.1-.9 0-2.3-1.1-3.8-1-2 0-3.8 1.1-4.8 2.9-2 3.5-.5 8.8 1.5 11.7 1 1.4 2.1 3 3.6 2.9 1.5-.1 2-.9 3.8-.9s2.3.9 3.8.9c1.6 0 2.6-1.4 3.5-2.9 1.1-1.6 1.6-3.2 1.6-3.3 0 0-3-1.2-3-4.6zM16.8 5.9c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.7.8-3.5 1.8-.8.9-1.5 2.3-1.3 3.7 1.3.1 2.7-.7 3.6-1.7z"></path></svg>
-              <span style="display:flex; flex-direction:column; align-items:flex-start; line-height:1.1;">
-                <span style="font-size:10px; font-weight:500; letter-spacing:0.04em; opacity:0.7;">Download on the</span>
-                <span style="font-size:17px; font-weight:700; letter-spacing:-0.02em;">App Store</span>
-              </span>
-            </a>
-            <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" aria-label="GET IT ON Google Play" class="btn-dark" style="height:58px; padding:0 20px; border-radius:14px; background:#16130F; color:#FAF7F4; display:flex; align-items:center; gap:11px; cursor:pointer;">
-              <svg width="22" height="24" viewBox="0 0 24 26" aria-hidden="true" style="flex:none;"><path d="M2.1 1.3C1.7 1.7 1.5 2.3 1.5 3.1v19.8c0 .8.2 1.4.6 1.8l.1.1L13.3 13.7v-.3L2.2 1.2l-.1.1z" fill="#EA4335"></path><path d="M17 17.4l-3.7-3.7v-.3l3.7-3.7.1.1 4.4 2.5c1.3.7 1.3 1.9 0 2.6l-4.4 2.5h-.1z" fill="#FBBC04"></path><path d="M17.1 17.3L13.3 13.5 2.1 24.8c.4.5 1.1.5 1.9.1l13.1-7.6z" fill="#34A853"></path><path d="M17.1 9.8L4 2.2c-.8-.4-1.5-.4-1.9.1l11.2 11.2 3.8-3.7z" fill="#4285F4"></path></svg>
-              <span style="display:flex; flex-direction:column; align-items:flex-start; line-height:1.1;">
-                <span style="font-size:10px; font-weight:500; letter-spacing:0.04em; opacity:0.7;">GET IT ON</span>
-                <span style="font-size:17px; font-weight:700; letter-spacing:-0.02em;">Google Play</span>
-              </span>
-            </a>
-          </div>
-        </div>
-      </section>
-    </div>
-
-      </main>
-
-<footer style="background:#16130F; color:#FAF7F4;">
-    <div style="max-width:1160px; margin:0 auto; padding:clamp(44px,6vw,64px) clamp(20px,4vw,32px) 40px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr)); gap:40px;">
+<main>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="orb a" aria-hidden="true"></div><div class="orb b" aria-hidden="true"></div><div class="gridlines" aria-hidden="true"></div>
+    <div class="wrap hero-grid" style="position:relative;">
       <div>
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span style="width:34px; height:34px; flex:none; border-radius:9px; background:#000000; overflow:hidden; display:flex;"><img src="/assets/logo.png" alt="" style="width:34px; height:34px; object-fit:contain; display:block;"></span>
-          <span style="font-size:20px; font-weight:700; letter-spacing:-0.03em;">capylift<span style="color:#FF6A24;">.</span></span>
+        <div class="pill reveal"><span class="pulse"></span><span class="eyebrow">AI STRENGTH COACH</span></div>
+        <h1 id="headline">A coach plans your week. You get the final say on all of it.</h1>
+        <p class="lede reveal" style="--d:.5s">Capylift builds real training around your goal, your kit and the days you show up. Swap a session, drop a set, move a day — it adapts to how you train instead of arguing with you.</p>
+        <div class="ctas reveal" style="--d:.65s">
+          <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" class="store magnetic" aria-label="Download on the App Store">
+            <svg width="24" height="28" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true"><path d="M19.7 14.9c0-3 2.4-4.4 2.5-4.5-1.4-2-3.5-2.3-4.3-2.3-1.8-.2-3.5 1.1-4.5 1.1-.9 0-2.3-1.1-3.8-1-2 0-3.8 1.1-4.8 2.9-2 3.5-.5 8.8 1.5 11.7 1 1.4 2.1 3 3.6 2.9 1.5-.1 2-.9 3.8-.9s2.3.9 3.8.9c1.6 0 2.6-1.4 3.5-2.9 1.1-1.6 1.6-3.2 1.6-3.3 0 0-3-1.2-3-4.6zM16.8 5.9c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.7.8-3.5 1.8-.8.9-1.5 2.3-1.3 3.7 1.3.1 2.7-.7 3.6-1.7z"/></svg>
+            <span><small>Download on the</small><strong>App Store</strong></span>
+          </a>
+          <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" class="store ghost magnetic" aria-label="Get it on Google Play">
+            <svg width="24" height="26" viewBox="0 0 24 26" aria-hidden="true"><path d="M2.1 1.3C1.7 1.7 1.5 2.3 1.5 3.1v19.8c0 .8.2 1.4.6 1.8l.1.1L13.3 13.7v-.3L2.2 1.2l-.1.1z" fill="#EA4335"/><path d="M17 17.4l-3.7-3.7v-.3l3.7-3.7.1.1 4.4 2.5c1.3.7 1.3 1.9 0 2.6l-4.4 2.5h-.1z" fill="#FBBC04"/><path d="M17.1 17.3L13.3 13.5 2.1 24.8c.4.5 1.1.5 1.9.1l13.1-7.6z" fill="#34A853"/><path d="M17.1 9.8L4 2.2c-.8-.4-1.5-.4-1.9.1l11.2 11.2 3.8-3.7z" fill="#4285F4"/></svg>
+            <span><small>GET IT ON</small><strong>Google Play</strong></span>
+          </a>
         </div>
-        <div style="margin-top:14px; font-size:15px; line-height:1.55; color:rgba(250,247,244,0.55); max-width:34ch; text-wrap:pretty;">Strength training with a coach that watches your form.</div>
+        <div class="facts mono reveal" style="--d:.8s"><span>Free to start</span><span>·</span><span>No equipment needed</span><span>·</span><span>Form check on your phone</span></div>
       </div>
-      <div>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:rgba(250,247,244,0.4);">PRODUCT</div>
-        <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px; font-size:15px;">
-          <a href="/" class="flink plain">Features</a>
-          <a href="/" class="flink plain">How it works</a>
-          <span class="flink">Pricing</span>
-        </div>
-      </div>
-      <div>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:rgba(250,247,244,0.4);">SUPPORT</div>
-        <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px; font-size:15px;">
-          <a href="/support/" class="flink plain">Help centre</a>
-          <a href="mailto:support@capylift.app" class="flink plain">support@capylift.app</a>
-          <a href="/support/" class="flink plain">Report a bug</a>
-        </div>
-      </div>
-      <div>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:rgba(250,247,244,0.4);">LEGAL</div>
-        <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px; font-size:15px;">
-          <a href="/privacy/" class="flink plain">Privacy policy</a>
-          <a href="/terms/" class="flink plain">Terms &amp; conditions</a>
-          <span class="flink">Cookie settings</span>
+
+      <div class="stage reveal" style="--d:.25s" id="stage">
+        <div class="tilt" id="tilt">
+          <div class="p-back"><div class="phone float" style="animation-delay:-2s"><img src="/assets/coach2.png" alt="Capylift AI coach" loading="eager"></div></div>
+          <div class="p-main"><div class="phone float"><img src="/assets/session1.jpg" alt="Today's session" loading="eager"></div></div>
+          <div class="badge b1"><span class="ic">✓</span><span><small>PLAN READY</small>4 days · 45 min</span></div>
+          <div class="badge b2"><span class="ic">◎</span><span><small>FORM CHECK</small>Chest up, look forward</span></div>
+          <div class="badge b3"><span class="ic">✦</span><span><small>COACH</small>Change applied</span></div>
         </div>
       </div>
     </div>
-    <div style="max-width:1160px; margin:0 auto; padding:0 clamp(20px,4vw,32px) 46px;">
-      <div style="border-top:1px solid rgba(250,247,244,0.12); padding-top:22px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px 24px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; color:rgba(250,247,244,0.4);">
-        <span>© 2026 CAPYLIFT</span>
-        <span>MADE FOR PEOPLE WHO TRAIN ANYWHERE</span>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="track">
+      <span>AI workout plans</span><span>Live form check</span><span>One-tap set logging</span><span>Rest timer</span><span>AI coach chat</span><span>Muscle heatmap</span><span>Streaks &amp; awards</span><span>Friend challenges</span>
+      <span>AI workout plans</span><span>Live form check</span><span>One-tap set logging</span><span>Rest timer</span><span>AI coach chat</span><span>Muscle heatmap</span><span>Streaks &amp; awards</span><span>Friend challenges</span>
+    </div>
+  </div>
+
+  <!-- VALUE CARDS -->
+  <section>
+    <div class="wrap">
+      <div class="cards">
+        <div class="card reveal"><span class="num">01</span><div class="k mono">A real programme</div><h3>Built around you</h3><p>Goal, kit and the days you can train go in. A structured week comes out — not a list of random exercises.</p></div>
+        <div class="card reveal" style="--d:.1s"><span class="num">02</span><div class="k mono">Yours to change</div><h3>Adapts to your way</h3><p>Edit any session, set or load and the coach plans around your version. It never quietly reverts your changes.</p></div>
+        <div class="card reveal" style="--d:.2s"><span class="num">03</span><div class="k mono">Nothing lost</div><h3>Everything tracked</h3><p>Volume, loads, streaks and per-exercise trends, so progress is a number rather than a feeling.</p></div>
+      </div>
+      <div class="stats" style="margin-top:18px;">
+        <div class="stat reveal"><div class="v"><span data-count="400">0</span><em>+</em></div><div class="l">exercises, each with a demo loop</div></div>
+        <div class="stat reveal" style="--d:.1s"><div class="v"><span data-count="1">0</span><em> tap</em></div><div class="l">to log every set</div></div>
+        <div class="stat reveal" style="--d:.2s"><div class="v"><span data-count="0">0</span><em> videos</em></div><div class="l">recorded during form check</div></div>
       </div>
     </div>
-  </footer>
-</div>
+  </section>
 
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap features">
+
+      <div class="row">
+        <div class="copy">
+          <div class="eyebrow reveal">YOUR AI COACH</div>
+          <h2 class="reveal" style="--d:.08s">It suggests the work, and tells you why.</h2>
+          <p class="reveal" style="--d:.16s">The coach reads every session you log and every form check you run. Ask how your lifts are trending and it answers from your own history with a chart of your real numbers. Ask for a tweak and it proposes a specific change, like a heavier row on Monday or a swapped exercise. Nothing changes until you tap Apply.</p>
+          <ul class="ticks">
+            <li class="reveal" style="--d:.24s">Ask from the Coach tab or straight from Home</li>
+            <li class="reveal" style="--d:.32s">Proposes swaps, load changes and new days, applied in one tap</li>
+            <li class="reveal" style="--d:.40s">Progress charts built from what you actually lifted</li>
+          </ul>
+        </div>
+        <div class="shot reveal right" data-speed="-0.08"><div class="halo"></div><div class="ring"></div><div class="phone"><img src="/assets/coach1.png" alt="Capylift coach proposing a plan change" loading="lazy"></div></div>
+      </div>
+
+      <div class="row flip">
+        <div class="copy">
+          <div class="eyebrow reveal">IN THE SET</div>
+          <h2 class="reveal" style="--d:.08s">One exercise. One tap per set.</h2>
+          <p class="reveal" style="--d:.16s">The screen holds exactly what you are doing now: the movement, a demo loop of it, and one big button. Pick your weight, start the set, rest, start the next one. The rest timer starts itself, and you can stop it whenever you are ready.</p>
+          <ul class="ticks">
+            <li class="reveal" style="--d:.24s">Set your weight before every set</li>
+            <li class="reveal" style="--d:.32s">Rest timer starts itself, stop it any time</li>
+            <li class="reveal" style="--d:.40s">A demo loop for every movement</li>
+          </ul>
+        </div>
+        <div class="shot reveal left" data-speed="-0.08"><div class="halo"></div><div class="ring"></div><div class="phone"><img src="/assets/session2.png" alt="Capylift set screen with rest timer" loading="lazy"></div></div>
+      </div>
+
+      <div class="row">
+        <div class="copy">
+          <div class="eyebrow reveal">WORKOUT TRACKING</div>
+          <h2 class="reveal" style="--d:.08s">Every set counted, and compared.</h2>
+          <p class="reveal" style="--d:.16s">Volume by day, this week against last, weekly targets and your calorie trend, all built from what you actually lifted. A muscle heatmap shows what you have trained, and awards for streaks, PBs and workout milestones keep the next goal in sight.</p>
+          <ul class="ticks">
+            <li class="reveal" style="--d:.24s">Sessions, reps and minutes against weekly targets</li>
+            <li class="reveal" style="--d:.32s">Top exercises and a front-and-back muscle heatmap</li>
+            <li class="reveal" style="--d:.40s">Awards for 7, 14 and 30-day streaks, PBs and milestones</li>
+          </ul>
+        </div>
+        <div class="shot reveal right" data-speed="-0.08"><div class="halo"></div><div class="ring"></div><div class="phone"><img src="/assets/stat.png" alt="Capylift weekly progress stats" loading="lazy"></div></div>
+      </div>
+
+      <div class="row flip">
+        <div class="copy">
+          <div class="eyebrow reveal">FORM CHECK — OPTIONAL</div>
+          <h2 class="reveal" style="--d:.08s">And when you want it, a second pair of eyes.</h2>
+          <p class="reveal" style="--d:.16s">Prop up your phone and step into the outline. When Capylift can see your whole body, the set starts on its own. It counts every rep and gives one short correction at a time, like “chest up, look forward”, on screen and out loud. Use it on a new movement, skip it on the ones you own. Nothing is recorded: the feed is read live, frame by frame, and never saved.</p>
+          <ul class="ticks">
+            <li class="reveal" style="--d:.24s">Counts reps and checks depth, back position and balance</li>
+            <li class="reveal" style="--d:.32s">Results feed straight back to the coach</li>
+            <li class="reveal" style="--d:.40s">Live only — no video is captured or stored</li>
+          </ul>
+        </div>
+        <div class="shot reveal left" data-speed="-0.08"><div class="halo"></div><div class="ring"></div><div class="phone"><img src="/assets/formcheck.jpg" alt="Live form check: Capylift tracks your squat and cues you to keep your chest up" loading="lazy"><div class="scan" aria-hidden="true"></div></div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <div class="how" id="how">
+    <div class="wrap">
+      <div class="eyebrow reveal">HOW IT WORKS</div>
+      <h2 class="reveal" style="--d:.08s">Three minutes to your first set.</h2>
+      <div class="steps" id="steps">
+        <div class="stepline" aria-hidden="true"><i></i></div>
+        <div class="step reveal"><div class="n">01</div><h3>Answer a few quick questions</h3><p>Your goal, experience, measurements, days a week and the kit you own. One tap per answer, about two minutes.</p></div>
+        <div class="step reveal" style="--d:.15s"><div class="n">02</div><h3>Get your week</h3><p>A structured programme with real sessions on real days. Change any of it before you start.</p></div>
+        <div class="step reveal" style="--d:.3s"><div class="n">03</div><h3>Train and log</h3><p>Log every set with one tap. The coach reads what you lifted and suggests changes to your plan, which you approve. Add a form check whenever you want one.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <section>
+    <div class="wrap">
+      <div class="cta reveal">
+        <div class="logo"><img src="/assets/logo.png" alt="" width="150" height="150"></div>
+        <div style="flex:1 1 320px; min-width:0;">
+          <h2>Lift heavy. <span class="flame">Stay chill.</span></h2>
+          <p>A coach that builds your week, tracks every set, and keeps up when life gets in the way. Free to start.</p>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" class="store magnetic" aria-label="Download on the App Store">
+            <svg width="22" height="26" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true"><path d="M19.7 14.9c0-3 2.4-4.4 2.5-4.5-1.4-2-3.5-2.3-4.3-2.3-1.8-.2-3.5 1.1-4.5 1.1-.9 0-2.3-1.1-3.8-1-2 0-3.8 1.1-4.8 2.9-2 3.5-.5 8.8 1.5 11.7 1 1.4 2.1 3 3.6 2.9 1.5-.1 2-.9 3.8-.9s2.3.9 3.8.9c1.6 0 2.6-1.4 3.5-2.9 1.1-1.6 1.6-3.2 1.6-3.3 0 0-3-1.2-3-4.6zM16.8 5.9c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.7.8-3.5 1.8-.8.9-1.5 2.3-1.3 3.7 1.3.1 2.7-.7 3.6-1.7z"/></svg>
+            <span><small>Download on the</small><strong>App Store</strong></span>
+          </a>
+          <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" class="store ghost magnetic" aria-label="Get it on Google Play">
+            <svg width="22" height="24" viewBox="0 0 24 26" aria-hidden="true"><path d="M2.1 1.3C1.7 1.7 1.5 2.3 1.5 3.1v19.8c0 .8.2 1.4.6 1.8l.1.1L13.3 13.7v-.3L2.2 1.2l-.1.1z" fill="#EA4335"/><path d="M17 17.4l-3.7-3.7v-.3l3.7-3.7.1.1 4.4 2.5c1.3.7 1.3 1.9 0 2.6l-4.4 2.5h-.1z" fill="#FBBC04"/><path d="M17.1 17.3L13.3 13.5 2.1 24.8c.4.5 1.1.5 1.9.1l13.1-7.6z" fill="#34A853"/><path d="M17.1 9.8L4 2.2c-.8-.4-1.5-.4-1.9.1l11.2 11.2 3.8-3.7z" fill="#4285F4"/></svg>
+            <span><small>GET IT ON</small><strong>Google Play</strong></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a href="/" class="brand"><span class="icon"><img src="/assets/logo.png" alt="" width="34" height="34"></span><b>capylift<span class="flame">.</span></b></a>
+        <div style="margin-top:14px; font-size:15px; line-height:1.55; color:var(--faint); max-width:34ch;">Strength training with a coach that watches your form.</div>
+      </div>
+      <div><div class="fhead mono">Product</div><div class="flinks"><a href="#features" class="flink">Features</a><a href="#how" class="flink">How it works</a><span class="flink">Pricing</span></div></div>
+      <div><div class="fhead mono">Support</div><div class="flinks"><a href="/support/" class="flink">Help centre</a><a href="mailto:support@capylift.app" class="flink">support@capylift.app</a><a href="/support/" class="flink">Report a bug</a></div></div>
+      <div><div class="fhead mono">Legal</div><div class="flinks"><a href="/privacy/" class="flink">Privacy policy</a><a href="/terms/" class="flink">Terms &amp; conditions</a><span class="flink">Cookie settings</span></div></div>
+    </div>
+    <div class="bigword" aria-hidden="true">capylift<span>.</span></div>
+    <div class="fbar mono"><span>© 2026 Capylift</span><span>Made for people who train anywhere</span></div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(pointer: fine)').matches;
+
+  // Headline: split into words that rise in one after another.
+  const h1 = document.getElementById('headline');
+  h1.innerHTML = h1.textContent.trim().split(/\s+/).map((w, i) =>
+    `<span class="w"><span style="transition-delay:${(0.1 + i * 0.06).toFixed(2)}s">${w}</span></span>`).join(' ');
+  requestAnimationFrame(() => requestAnimationFrame(() => h1.classList.add('in')));
+
+  // Reveal on scroll (+ count-up numbers and the step line).
+  const counted = new WeakSet();
+  const count = el => {
+    if (counted.has(el)) return; counted.add(el);
+    const to = +el.dataset.count, dur = 1400, t0 = performance.now();
+    if (reduce || to === 0) { el.textContent = to; return; }
+    const tick = t => { const p = Math.min(1, (t - t0) / dur); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  };
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    e.target.querySelectorAll?.('[data-count]').forEach(count);
+    io.unobserve(e.target);
+  }), { threshold: 0.18, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.reveal, #steps').forEach(el => io.observe(el));
+
+  // Header state, scroll progress and parallax, batched into one frame.
+  const header = document.getElementById('top'), bar = document.getElementById('progress');
+  const par = [...document.querySelectorAll('[data-speed]')];
+  let ticking = false;
+  const onScroll = () => {
+    ticking = false;
+    const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+    header.classList.toggle('scrolled', y > 10);
+    bar.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
+    if (reduce) return;
+    par.forEach(el => {
+      const r = el.getBoundingClientRect(), mid = r.top + r.height / 2 - innerHeight / 2;
+      el.style.translate = `0 ${(mid * +el.dataset.speed).toFixed(1)}px`;
+    });
+  };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  onScroll();
+
+  if (reduce || !fine) return;
+
+  // Hero phones tilt toward the pointer.
+  const stage = document.getElementById('stage'), tilt = document.getElementById('tilt');
+  stage.addEventListener('pointermove', e => {
+    const r = stage.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    tilt.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 10}deg)`;
+  });
+  stage.addEventListener('pointerleave', () => { tilt.style.transform = ''; });
+
+  // Cursor glow + card spotlight.
+  const glow = document.getElementById('cursor-glow');
+  addEventListener('pointermove', e => { glow.style.opacity = 1; glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; }, { passive: true });
+  document.querySelectorAll('.card').forEach(c => c.addEventListener('pointermove', e => {
+    const r = c.getBoundingClientRect(); c.style.setProperty('--mx', `${e.clientX - r.left}px`); c.style.setProperty('--my', `${e.clientY - r.top}px`);
+  }));
+
+  // Magnetic buttons.
+  document.querySelectorAll('.magnetic').forEach(b => {
+    b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .25}px)`; });
+    b.addEventListener('pointerleave', () => { b.style.transform = ''; });
+  });
+})();
+</script>
 </body>
 </html>
