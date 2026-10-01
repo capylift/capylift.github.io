@@ -15,145 +15,112 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 
-<style>
-  * { box-sizing: border-box; }
-  body { margin: 0; background: #FAF7F4; color: #16130F; font-family: 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  a { color: #E8511C; text-decoration: none; }
-  a:hover { color: #B93C11; }
-  @keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-  /* interactive states (the design tool used a custom style-hover attr) */
-  .navlink { font-size:15px; font-weight:500; color:#5D564F; cursor:pointer; transition:color .16s ease; }
-  .navlink:hover, .navlink.active { color:#16130F; }
-  .btn-dark { transition:background .16s ease; }
-  .btn-dark:hover { background:#2A241E !important; }
-  .flink { color:rgba(250,247,244,0.8); cursor:pointer; transition:color .16s ease; }
-  .flink:hover { color:#FAF7F4; }
-  .plain { color:inherit; }
-  .plain:hover { color:inherit; }
-
-
-</style>
+<link rel="stylesheet" href="/assets/site.css">
+<meta name="theme-color" content="#000000">
 </head>
 <body>
+<div id="progress"></div>
+<div class="grain" aria-hidden="true"></div>
+<header id="top">
+  <div class="wrap nav">
+    <a href="/" class="brand"><span class="icon"><img src="/assets/logo.png" alt="Capylift" width="38" height="38"></span><b>capylift<span class="flame">.</span></b></a>
+    <nav class="navlinks">
+      <a href="/" class="navlink">Features</a>
+      <a href="/support/" class="navlink active">Help &amp; support</a>
+      <a href="/privacy/" class="navlink">Privacy</a>
+      <a href="/terms/" class="navlink">Terms</a>
+      <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" class="btn btn-flame" aria-label="Get the app">Get the app</a>
+    </nav>
+  </div>
+</header>
 
-<div style="min-height:100vh; display:flex; flex-direction:column;">
+<main class="page">
+  <div class="page-glow" aria-hidden="true"></div>
 
-<header style="position:sticky; top:0; z-index:50; background:rgba(250,247,244,0.88); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);">
-    <div style="max-width:1160px; margin:0 auto; padding:12px clamp(16px,4vw,32px); min-height:74px; display:flex; align-items:center; flex-wrap:wrap; gap:16px 28px;">
-      <a href="/" class="plain" style="display:flex; align-items:center; gap:10px; margin-right:auto;">
-        <span style="width:38px; height:38px; flex:none; border-radius:10px; background:#000000; overflow:hidden; display:flex;"><img src="/assets/logo.png" alt="Capylift" style="width:38px; height:38px; object-fit:contain; display:block;"></span>
-        <span style="font-size:21px; font-weight:700; letter-spacing:-0.03em;">capylift<span style="color:#FF6A24;">.</span></span>
-      </a>
-      <nav style="display:flex; align-items:center; flex-wrap:wrap; gap:12px 24px;">
-        <a href="/" data-nav="home" class="navlink plain">Features</a>
-        <a href="/support/" data-nav="support" class="navlink plain active">Help &amp; support</a>
-        <a href="/privacy/" data-nav="privacy" class="navlink plain">Privacy</a>
-        <a href="/terms/" data-nav="terms" class="navlink plain">Terms</a>
-        <a href="https://apps.apple.com/gb/app/capylift-ai-fitness-trainer/id6780143263" target="_blank" rel="noopener" aria-label="Get the app" class="btn-dark" style="height:38px; padding:0 20px; border-radius:14px; background:#16130F; color:#FAF7F4; display:flex; align-items:center; font-size:15px; font-weight:700; cursor:pointer;">Get the app</a>
-      </nav>
-    </div>
-  </header>
-
-  <main style="flex:1;">
 
     <div class="route" id="route-support">
       <div style="max-width:1160px; margin:0 auto; padding:clamp(44px,6vw,72px) clamp(20px,4vw,32px) clamp(64px,8vw,96px);">
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.14em; color:#8A8178;">HELP &amp; SUPPORT</div>
-        <h1 style="margin:14px 0 0; font-size:clamp(30px,4.6vw,48px); font-weight:700; letter-spacing:-0.03em; text-wrap:balance;">Something not working? Start here.</h1>
-        <p style="margin:14px 0 0; font-size:18px; line-height:1.55; color:#5D564F; max-width:60ch; text-wrap:pretty;">Most questions are about how the coach builds your plan, and what happens to your data. Both are answered below.</p>
+        <div class="reveal" style="--d:0.00s;font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.14em; color:rgba(250,247,244,0.42);">HELP &amp; SUPPORT</div>
+        <h1 class="reveal" style="--d:0.06s;margin:14px 0 0; font-size:clamp(30px,4.6vw,48px); font-weight:700; letter-spacing:-0.03em; text-wrap:balance;">Something not working? Start here.</h1>
+        <p class="reveal" style="--d:0.12s;margin:14px 0 0; font-size:18px; line-height:1.55; color:rgba(250,247,244,0.62); max-width:60ch; text-wrap:pretty;">Most questions are about how the coach builds your plan, and what happens to your data. Both are answered below.</p>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(258px,100%),1fr)); gap:16px; margin:40px 0 56px;">
-          <div style="padding:24px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#8A8178;">EMAIL</div>
+        <div class="reveal" style="--d:0.18s;display:grid; grid-template-columns:repeat(auto-fit,minmax(min(258px,100%),1fr)); gap:16px; margin:40px 0 56px;">
+          <div style="padding:24px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:rgba(250,247,244,0.42);">EMAIL</div>
             <div style="font-size:19px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 6px;">Talk to a human</div>
-            <div style="font-size:15px; line-height:1.5; color:#5D564F; text-wrap:pretty;">Every message is read by someone on the team. Replies within one working day.</div>
-            <div style="margin-top:14px; font-size:15px; font-weight:700; color:#E8511C;"><a href="mailto:support@capylift.app">support@capylift.app</a></div>
+            <div style="font-size:15px; line-height:1.5; color:rgba(250,247,244,0.62); text-wrap:pretty;">Every message is read by someone on the team. Replies within one working day.</div>
+            <div style="margin-top:14px; font-size:15px; font-weight:700; color:#FF6A24;"><a href="mailto:support@capylift.app">support@capylift.app</a></div>
           </div>
-          <div style="padding:24px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#8A8178;">IN APP</div>
+          <div style="padding:24px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:rgba(250,247,244,0.42);">IN APP</div>
             <div style="font-size:19px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 6px;">Report a bug</div>
-            <div style="font-size:15px; line-height:1.5; color:#5D564F; text-wrap:pretty;">Settings, then Report a bug. Attaches your device and app version automatically.</div>
-            <div style="margin-top:14px; font-size:15px; font-weight:700; color:#E8511C;">Open Settings</div>
+            <div style="font-size:15px; line-height:1.5; color:rgba(250,247,244,0.62); text-wrap:pretty;">Settings, then Report a bug. Attaches your device and app version automatically.</div>
+            <div style="margin-top:14px; font-size:15px; font-weight:700; color:#FF6A24;">Open Settings</div>
           </div>
-          <div style="padding:24px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#8A8178;">ACCOUNT</div>
+          <div style="padding:24px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:rgba(250,247,244,0.42);">ACCOUNT</div>
             <div style="font-size:19px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 6px;">Data and deletion</div>
-            <div style="font-size:15px; line-height:1.5; color:#5D564F; text-wrap:pretty;">Export everything we hold, or delete your account outright, from inside the app.</div>
-            <div style="margin-top:14px; font-size:15px; font-weight:700; color:#E8511C;">Settings, then Data</div>
+            <div style="font-size:15px; line-height:1.5; color:rgba(250,247,244,0.62); text-wrap:pretty;">Export everything we hold, or delete your account outright, from inside the app.</div>
+            <div style="margin-top:14px; font-size:15px; font-weight:700; color:#FF6A24;">Settings, then Data</div>
           </div>
         </div>
 
-        <div style="display:flex; flex-wrap:wrap; gap:clamp(28px,4vw,56px); align-items:flex-start;">
+        <div class="reveal" style="--d:0.24s;display:flex; flex-wrap:wrap; gap:clamp(28px,4vw,56px); align-items:flex-start;">
           <div style="position:sticky; top:100px; flex:1 1 220px; max-width:280px;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:#8A8178; margin-bottom:14px;">TOPICS</div>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; color:rgba(250,247,244,0.42); margin-bottom:14px;">TOPICS</div>
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <div style="padding:12px 16px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:14px; font-size:15px; font-weight:500;">Coaching and plans</div>
-              <div style="padding:12px 16px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:14px; font-size:15px; font-weight:500;">Tracking</div>
-              <div style="padding:12px 16px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:14px; font-size:15px; font-weight:500;">Form check</div>
-              <div style="padding:12px 16px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:14px; font-size:15px; font-weight:500;">Privacy and data</div>
-              <div style="padding:12px 16px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:14px; font-size:15px; font-weight:500;">Account and billing</div>
+              <div style="padding:12px 16px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:14px; font-size:15px; font-weight:500;" data-card>Coaching and plans</div>
+              <div style="padding:12px 16px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:14px; font-size:15px; font-weight:500;" data-card>Tracking</div>
+              <div style="padding:12px 16px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:14px; font-size:15px; font-weight:500;" data-card>Form check</div>
+              <div style="padding:12px 16px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:14px; font-size:15px; font-weight:500;" data-card>Privacy and data</div>
+              <div style="padding:12px 16px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:14px; font-size:15px; font-weight:500;" data-card>Account and billing</div>
             </div>
           </div>
           <div style="display:flex; flex-direction:column; gap:14px; flex:999 1 340px; min-width:0;">
-            <div style="padding:26px 28px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#B4470F;">COACHING AND PLANS</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">How does the coach decide what I should do?</div><div style="font-size:16px; line-height:1.6; color:#5D564F; text-wrap:pretty;">It starts from your onboarding answers — goal, experience, measurements, available days and kit — and generates a structured week. From then on it reads what you actually logged: loads, completed sets, missed days and any form checks you ran. Heavy sessions get a deload, skipped days get rescheduled, and new equipment unlocks new movements.</div></div>
-            <div style="padding:26px 28px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#B4470F;">COACHING AND PLANS</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">Can I change the plan it gave me?</div><div style="font-size:16px; line-height:1.6; color:#5D564F; text-wrap:pretty;">Yes, all of it. Change template swaps the whole programme; Edit weekly plan changes individual days; and inside any day you can edit sets, reps and load per exercise. Nothing is locked, and the coach adapts to your edits rather than overwriting them.</div></div>
-            <div style="padding:26px 28px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#B4470F;">COACHING AND PLANS</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">Do I have to use the camera?</div><div style="font-size:16px; line-height:1.6; color:#5D564F; text-wrap:pretty;">No. Form check is optional and the app works fully without it — plans, logging and tracking all run on what you enter yourself. Turning pose detection off in Settings simply removes the feature.</div></div>
-            <div style="padding:26px 28px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#B4470F;">TRACKING</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">What does Capylift track?</div><div style="font-size:16px; line-height:1.6; color:#5D564F; text-wrap:pretty;">Every set, rep and load you log, session length, volume by day, weekly targets, streaks, awards, and per-exercise trends over time. If you connect Apple Health or Garmin it also reads the metrics you authorise there.</div></div>
-            <div style="padding:26px 28px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#B4470F;">TRACKING</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">Will a rest day break my streak?</div><div style="font-size:16px; line-height:1.6; color:#5D564F; text-wrap:pretty;">No. Scheduled rest days count as following the plan. The streak only breaks when you skip a day the plan expected you to train.</div></div>
-            <div style="padding:26px 28px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#B4470F;">FORM CHECK</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">Is my form check recorded?</div><div style="font-size:16px; line-height:1.6; color:#5D564F; text-wrap:pretty;">No. There is no recording feature — the camera feed is read live on your device, frame by frame, and nothing is written to disk. No video file is created, so there is none to upload, share or delete. What we store is the output: rep counts, joint angles and a score per set.</div></div>
-            <div style="padding:26px 28px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#B4470F;">FORM CHECK</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">The camera says it cannot see me.</div><div style="font-size:16px; line-height:1.6; color:#5D564F; text-wrap:pretty;">It needs your whole body in frame, shot from the side, with the phone roughly at hip height. Bright backlighting behind you is the most common cause — turn so the window is in front of you rather than behind.</div></div>
-            <div style="padding:26px 28px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#B4470F;">PRIVACY AND DATA</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">How do I export my data?</div><div style="font-size:16px; line-height:1.6; color:#5D564F; text-wrap:pretty;">Settings, then Data, then Export my data. You get sessions, form-check results and your profile as CSV and JSON in one archive, emailed to your account address. Large archives can take up to an hour.</div></div>
-            <div style="padding:26px 28px; background:#FFFFFF; border:1px solid #EAE3DA; border-radius:22px;"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#B4470F;">ACCOUNT AND BILLING</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">What happens when I delete my account?</div><div style="font-size:16px; line-height:1.6; color:#5D564F; text-wrap:pretty;">Your training history and form-check results are erased and cannot be recovered. Export first if you want a copy — the deletion sheet offers it before you confirm.</div></div>
+            <div style="padding:26px 28px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#FF9556;">COACHING AND PLANS</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">How does the coach decide what I should do?</div><div style="font-size:16px; line-height:1.6; color:rgba(250,247,244,0.62); text-wrap:pretty;">It starts from your onboarding answers — goal, experience, measurements, available days and kit — and generates a structured week. From then on it reads what you actually logged: loads, completed sets, missed days and any form checks you ran. Heavy sessions get a deload, skipped days get rescheduled, and new equipment unlocks new movements.</div></div>
+            <div style="padding:26px 28px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#FF9556;">COACHING AND PLANS</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">Can I change the plan it gave me?</div><div style="font-size:16px; line-height:1.6; color:rgba(250,247,244,0.62); text-wrap:pretty;">Yes, all of it. Change template swaps the whole programme; Edit weekly plan changes individual days; and inside any day you can edit sets, reps and load per exercise. Nothing is locked, and the coach adapts to your edits rather than overwriting them.</div></div>
+            <div style="padding:26px 28px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#FF9556;">COACHING AND PLANS</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">Do I have to use the camera?</div><div style="font-size:16px; line-height:1.6; color:rgba(250,247,244,0.62); text-wrap:pretty;">No. Form check is optional and the app works fully without it — plans, logging and tracking all run on what you enter yourself. Turning pose detection off in Settings simply removes the feature.</div></div>
+            <div style="padding:26px 28px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#FF9556;">TRACKING</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">What does Capylift track?</div><div style="font-size:16px; line-height:1.6; color:rgba(250,247,244,0.62); text-wrap:pretty;">Every set, rep and load you log, session length, volume by day, weekly targets, streaks, awards, and per-exercise trends over time. If you connect Apple Health or Garmin it also reads the metrics you authorise there.</div></div>
+            <div style="padding:26px 28px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#FF9556;">TRACKING</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">Will a rest day break my streak?</div><div style="font-size:16px; line-height:1.6; color:rgba(250,247,244,0.62); text-wrap:pretty;">No. Scheduled rest days count as following the plan. The streak only breaks when you skip a day the plan expected you to train.</div></div>
+            <div style="padding:26px 28px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#FF9556;">FORM CHECK</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">Is my form check recorded?</div><div style="font-size:16px; line-height:1.6; color:rgba(250,247,244,0.62); text-wrap:pretty;">No. There is no recording feature — the camera feed is read live on your device, frame by frame, and nothing is written to disk. No video file is created, so there is none to upload, share or delete. What we store is the output: rep counts, joint angles and a score per set.</div></div>
+            <div style="padding:26px 28px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#FF9556;">FORM CHECK</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">The camera says it cannot see me.</div><div style="font-size:16px; line-height:1.6; color:rgba(250,247,244,0.62); text-wrap:pretty;">It needs your whole body in frame, shot from the side, with the phone roughly at hip height. Bright backlighting behind you is the most common cause — turn so the window is in front of you rather than behind.</div></div>
+            <div style="padding:26px 28px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#FF9556;">PRIVACY AND DATA</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">How do I export my data?</div><div style="font-size:16px; line-height:1.6; color:rgba(250,247,244,0.62); text-wrap:pretty;">Settings, then Data, then Export my data. You get sessions, form-check results and your profile as CSV and JSON in one archive, emailed to your account address. Large archives can take up to an hour.</div></div>
+            <div style="padding:26px 28px; background:#0E1013; border:1px solid rgba(250,247,244,0.10); border-radius:22px;" data-card><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:#FF9556;">ACCOUNT AND BILLING</div><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; margin:8px 0 10px; text-wrap:balance;">What happens when I delete my account?</div><div style="font-size:16px; line-height:1.6; color:rgba(250,247,244,0.62); text-wrap:pretty;">Your training history and form-check results are erased and cannot be recovered. Export first if you want a copy — the deletion sheet offers it before you confirm.</div></div>
           </div>
         </div>
       </div>
     </div>
 
-      </main>
+      
+</main>
 
-<footer style="background:#16130F; color:#FAF7F4;">
-    <div style="max-width:1160px; margin:0 auto; padding:clamp(44px,6vw,64px) clamp(20px,4vw,32px) 40px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr)); gap:40px;">
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
       <div>
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span style="width:34px; height:34px; flex:none; border-radius:9px; background:#000000; overflow:hidden; display:flex;"><img src="/assets/logo.png" alt="" style="width:34px; height:34px; object-fit:contain; display:block;"></span>
-          <span style="font-size:20px; font-weight:700; letter-spacing:-0.03em;">capylift<span style="color:#FF6A24;">.</span></span>
-        </div>
-        <div style="margin-top:14px; font-size:15px; line-height:1.55; color:rgba(250,247,244,0.55); max-width:34ch; text-wrap:pretty;">Strength training with a coach that watches your form.</div>
+        <a href="/" class="brand"><span class="icon"><img src="/assets/logo.png" alt="" width="34" height="34"></span><b>capylift<span class="flame">.</span></b></a>
+        <div style="margin-top:14px; font-size:15px; line-height:1.55; color:var(--faint); max-width:34ch;">Strength training with a coach that watches your form.</div>
       </div>
-      <div>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:rgba(250,247,244,0.4);">PRODUCT</div>
-        <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px; font-size:15px;">
-          <a href="/" class="flink plain">Features</a>
-          <a href="/" class="flink plain">How it works</a>
-          <span class="flink">Pricing</span>
-        </div>
-      </div>
-      <div>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:rgba(250,247,244,0.4);">SUPPORT</div>
-        <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px; font-size:15px;">
-          <a href="/support/" class="flink plain">Help centre</a>
-          <a href="mailto:support@capylift.app" class="flink plain">support@capylift.app</a>
-          <a href="/support/" class="flink plain">Report a bug</a>
-        </div>
-      </div>
-      <div>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; color:rgba(250,247,244,0.4);">LEGAL</div>
-        <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px; font-size:15px;">
-          <a href="/privacy/" class="flink plain">Privacy policy</a>
-          <a href="/terms/" class="flink plain">Terms &amp; conditions</a>
-          <span class="flink">Cookie settings</span>
-        </div>
-      </div>
+      <div><div class="fhead mono">Product</div><div class="flinks"><a href="/#features" class="flink">Features</a><a href="/#how" class="flink">How it works</a><span class="flink">Pricing</span></div></div>
+      <div><div class="fhead mono">Support</div><div class="flinks"><a href="/support/" class="flink">Help centre</a><a href="mailto:support@capylift.app" class="flink">support@capylift.app</a><a href="/support/" class="flink">Report a bug</a></div></div>
+      <div><div class="fhead mono">Legal</div><div class="flinks"><a href="/privacy/" class="flink">Privacy policy</a><a href="/terms/" class="flink">Terms &amp; conditions</a><span class="flink">Cookie settings</span></div></div>
     </div>
-    <div style="max-width:1160px; margin:0 auto; padding:0 clamp(20px,4vw,32px) 46px;">
-      <div style="border-top:1px solid rgba(250,247,244,0.12); padding-top:22px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px 24px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; color:rgba(250,247,244,0.4);">
-        <span>© 2026 CAPYLIFT</span>
-        <span>MADE FOR PEOPLE WHO TRAIN AT HOME</span>
-      </div>
-    </div>
-  </footer>
-</div>
+    <div class="fbar mono"><span>© 2026 Capylift</span><span>Made for people who train anywhere</span></div>
+  </div>
+</footer>
 
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const header = document.getElementById('top'), bar = document.getElementById('progress');
+  const onScroll = () => { const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+    header.classList.toggle('scrolled', y > 10); bar.style.transform = `scaleX(${max > 0 ? y / max : 0})`; };
+  addEventListener('scroll', () => requestAnimationFrame(onScroll), { passive: true }); onScroll();
+  const items = document.querySelectorAll('.reveal');
+  if (reduce) { items.forEach(e => e.classList.add('in')); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+  items.forEach(e => io.observe(e));
+})();
+</script>
 </body>
 </html>

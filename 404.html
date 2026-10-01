@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
   <title>Capylift Challenge</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --paper: #FAF7F4; --card: #FFFFFF; --ink: #16130F; --muted: #5D564F;
-      --flame: #FF6A24; --flame-soft: #FFF3EB; --line: #EAE3DA;
+      --paper: #000000; --card: #0E1013; --ink: #FAF7F4; --muted: rgba(250,247,244,0.62);
+      --flame: #FF6A24; --flame-soft: rgba(255,106,36,0.10); --line: rgba(250,247,244,0.12); --sunken: #171A1E;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'DM Sans', system-ui, sans-serif;
-      background: var(--paper); color: var(--ink);
+      background: radial-gradient(circle at 50% 0%, rgba(255,106,36,0.22), transparent 55%), var(--paper); color: var(--ink);
       min-height: 100vh; display: flex; align-items: center; justify-content: center;
       padding: 24px; -webkit-font-smoothing: antialiased;
     }
@@ -23,12 +24,12 @@
       width: 100%; max-width: 420px; background: var(--card);
       border: 1px solid var(--line); border-radius: 28px;
       padding: 36px 28px; text-align: center;
-      box-shadow: 0 24px 60px rgba(22,19,15,0.08);
+      box-shadow: 0 30px 80px -30px rgba(255,106,36,0.45); animation: rise .8s cubic-bezier(.2,.8,.2,1) both;
     }
     .logo {
       width: 64px; height: 64px; border-radius: 18px; background: #000;
       display: inline-flex; align-items: center; justify-content: center;
-      margin-bottom: 22px;
+      margin-bottom: 22px; box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(255,106,36,0.6);
     }
     .logo img { width: 42px; height: 42px; object-fit: contain; }
     .eyebrow {
@@ -47,7 +48,7 @@
       width: 44px; height: 54px; border: 1px solid var(--line); border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
       font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 22px;
-      background: var(--paper);
+      background: var(--sunken); color: var(--flame);
     }
     .btn {
       display: block; width: 100%; margin-top: 14px; padding: 17px;
@@ -55,13 +56,15 @@
       border: none; text-decoration: none; transition: transform .06s ease;
     }
     .btn:active { transform: scale(0.985); }
-    .btn-primary { background: var(--flame); color: var(--ink); }
-    .btn-secondary { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+    .btn-primary { background: var(--flame); color: #000; box-shadow: 0 12px 30px -10px rgba(255,106,36,0.7); }
+    .btn-secondary { background: var(--sunken); color: var(--ink); border: 1px solid var(--line); }
     .btns { margin-top: 26px; }
     .note { font-size: 13px; color: var(--muted); margin-top: 18px; line-height: 1.5; }
     .home { margin-top: 22px; font-size: 14px; }
     .home a { color: var(--flame); text-decoration: none; font-weight: 500; }
     .hidden { display: none; }
+    @keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .card { animation: none; } }
   </style>
 </head>
 <body>
