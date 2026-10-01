@@ -269,6 +269,60 @@
     .fig svg { height: 44vh; }
   }
 
+
+  /* ---------- animated coach chat ---------- */
+  .chat { position: relative; aspect-ratio: 1206 / 2622; border-radius: 38px; overflow: hidden; background: #000; display: flex; flex-direction: column; font-size: 12.5px; }
+  .cs-status { display: flex; align-items: center; justify-content: space-between; padding: 14px 26px 0; height: 44px; font-size: 13px; }
+  .cs-island { position: absolute; left: 50%; top: 11px; transform: translateX(-50%); width: 92px; height: 27px; border-radius: 20px; background: #000; box-shadow: 0 0 0 1px rgba(255,255,255,.04); }
+  .cs-icons { display: flex; gap: 3px; align-items: flex-end; }
+  .cs-icons i { width: 3px; background: var(--paper); border-radius: 1px; }
+  .cs-icons i:nth-child(1) { height: 4px; } .cs-icons i:nth-child(2) { height: 6px; } .cs-icons i:nth-child(3) { height: 8px; } .cs-icons i:nth-child(4) { height: 10px; }
+  .cs-head { display: flex; gap: 11px; align-items: center; padding: 14px 16px 6px; }
+  .cs-ai { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: #2A1309; color: var(--flame); font-weight: 700; font-size: 13px; }
+  .cs-head b { display: block; font-size: 19px; letter-spacing: -.02em; }
+  .cs-head small { display: block; color: var(--faint); font-size: 11px; margin-top: 1px; }
+  .cs-day { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: .16em; color: var(--faint); padding: 12px 16px 6px; }
+  .cs-feed { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 9px; padding: 0 12px 10px; overflow: hidden; }
+  .msg { max-width: 82%; padding: 9px 12px; border-radius: 16px; line-height: 1.45; animation: msgIn .45s var(--ease) both; }
+  .msg.me { align-self: flex-end; background: #1B1F24; border-bottom-right-radius: 6px; }
+  .msg.bot { align-self: flex-start; background: #0E1013; box-shadow: inset 0 0 0 1px var(--line); border-bottom-left-radius: 6px; }
+  .msg .caret { display: inline-block; width: 6px; height: 12px; margin-left: 2px; vertical-align: -1px; background: var(--flame); animation: blink 1s steps(1) infinite; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+  .typing { align-self: flex-start; display: flex; gap: 4px; padding: 11px 13px; border-radius: 16px; background: #0E1013; box-shadow: inset 0 0 0 1px var(--line); animation: msgIn .3s var(--ease) both; }
+  .typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); animation: dot 1s ease-in-out infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes dot { 0%,60%,100% { transform: none; opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+  .card-x { align-self: stretch; padding: 11px 12px; border-radius: 14px; background: #0E1013; box-shadow: inset 0 0 0 1px rgba(255,106,36,.35); animation: msgIn .5s var(--ease) both; }
+  .card-x .h { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; letter-spacing: .12em; color: var(--flame); font-weight: 600; }
+  .card-x .ttl { font-weight: 700; margin-top: 6px; font-size: 12.5px; }
+  .card-x .meta { color: var(--faint); font-size: 10.5px; margin-top: 3px; }
+  .card-x .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; transition: opacity .3s; }
+  .card-x .btns span { position: relative; overflow: hidden; height: 28px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 11.5px; background: #1B1F24; transition: transform .15s; }
+  .card-x .btns .apply { background: var(--flame); color: #000; }
+  .card-x .btns .apply.press { transform: scale(.94); }
+  .ripple { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.7); transform: scale(0); animation: rip .6s ease-out forwards; }
+  @keyframes rip { to { transform: scale(14); opacity: 0; } }
+  .card-x .done { display: none; align-items: center; gap: 7px; margin-top: 10px; color: var(--flame); font-weight: 700; font-size: 12px; animation: msgIn .4s var(--ease) both; }
+  .card-x .done i { width: 17px; height: 17px; border-radius: 50%; background: var(--flame); color: #000; display: grid; place-items: center; font-style: normal; font-size: 10px; }
+  .card-x.applied { box-shadow: inset 0 0 0 1px rgba(255,106,36,.6), 0 0 26px -6px rgba(255,106,36,.5); }
+  .card-x.applied .btns { display: none; } .card-x.applied .done { display: flex; }
+  .cchart { align-self: stretch; padding: 10px 12px 8px; border-radius: 14px; background: #0E1013; box-shadow: inset 0 0 0 1px var(--line); animation: msgIn .5s var(--ease) both; }
+  .cchart .ttl { font-weight: 700; font-size: 11.5px; }
+  .cchart svg { width: 100%; height: 86px; margin-top: 6px; overflow: visible; }
+  .cchart .ln { fill: none; stroke: var(--flame); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s var(--ease) .15s forwards; filter: drop-shadow(0 0 6px rgba(255,106,36,.6)); }
+  .cchart .pt { fill: var(--flame); opacity: 0; animation: pop .3s ease forwards; }
+  .cchart .gl { stroke: var(--line); stroke-dasharray: 2 4; }
+  .cchart text { fill: var(--faint); font-family: 'IBM Plex Mono', monospace; font-size: 8px; }
+  .cchart .up { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #7FBF6A; margin-top: 2px; }
+  @keyframes draw { to { stroke-dashoffset: 0; } } @keyframes pop { to { opacity: 1; } }
+  .chips2 { display: flex; gap: 6px; overflow: hidden; }
+  .chips2 span { flex: none; padding: 7px 11px; border-radius: 999px; background: #0E1013; box-shadow: inset 0 0 0 1px var(--line-2); font-size: 11px; white-space: nowrap; animation: msgIn .4s var(--ease) both; }
+  .cs-input { margin: 4px 12px 0; height: 40px; border-radius: 20px; background: #0E1013; box-shadow: inset 0 0 0 1px var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 5px 0 15px; color: var(--faint); font-size: 12px; }
+  .cs-input.typing-in { color: var(--paper); }
+  .cs-send { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-style: normal; background: #1B1F24; color: var(--faint); transition: background .2s, color .2s; }
+  .cs-input.ready .cs-send { background: var(--flame); color: #000; }
+  .cs-note { text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; letter-spacing: .04em; color: var(--faint); padding: 8px 18px 16px; }
+
   /* ---------- reduced motion ---------- */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -369,7 +423,14 @@
             <li class="reveal" style="--d:.40s">Progress charts built from what you actually lifted</li>
           </ul>
         </div>
-        <div class="shot reveal right" data-speed="-0.08"><div class="halo"></div><div class="ring"></div><div class="phone"><img src="/assets/coach1.png" alt="Capylift coach proposing a plan change" loading="lazy"></div></div>
+        <div class="shot reveal right" data-speed="-0.08"><div class="halo"></div><div class="ring"></div><div class="phone"><div class="chat" id="chat" role="img" aria-label="Animated Capylift coach conversation: it charts squat progress, then proposes and applies a plan change">
+            <div class="cs-status"><b>9:41</b><span class="cs-island"></span><span class="cs-icons"><i></i><i></i><i></i><i></i></span></div>
+            <div class="cs-head"><span class="cs-ai">AI</span><span><b>Coach</b><small>Reads your sessions and form checks</small></span></div>
+            <div class="cs-day">TODAY</div>
+            <div class="cs-feed" id="feed"></div>
+            <div class="cs-input"><span id="cs-typing-input">Ask your coach anything…</span><i class="cs-send">↑</i></div>
+            <div class="cs-note">Capylift gives general fitness guidance, not medical advice.</div>
+          </div></div></div>
       </div>
 
       <div class="row flip">
@@ -622,6 +683,74 @@
     };
     addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
     addEventListener('resize', update);
+  })();
+
+
+  // ---------- animated coach chat (real replies from a test account) ----------
+  (() => {
+    const chat = document.getElementById('chat'); if (!chat) return;
+    const feed = document.getElementById('feed'), input = chat.querySelector('.cs-input'), inText = document.getElementById('cs-typing-input');
+    const PH = 'Ask your coach anything…';
+    let alive = true, running = false, visible = false;
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    const el = (cls, html) => { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; feed.appendChild(d); trim(); return d; };
+    const trim = () => { while (feed.scrollHeight > feed.clientHeight + 2 && feed.children.length > 1) feed.firstElementChild.remove(); };
+    const until = async () => { while (!visible) await wait(250); };
+
+    async function ask(q) {
+      input.classList.add('typing-in'); inText.textContent = '';
+      for (const ch of q) { inText.textContent += ch; await wait(32); }
+      input.classList.add('ready'); await wait(350);
+      input.classList.remove('ready', 'typing-in'); inText.textContent = PH;
+      el('msg me', q); await wait(450);
+    }
+    async function reply(text) {
+      const t = el('typing', '<i></i><i></i><i></i>'); await wait(1300); t.remove();
+      const m = el('msg bot', '<span></span><i class="caret"></i>'), span = m.firstChild;
+      for (const w of text.split(' ')) { span.textContent += (span.textContent ? ' ' : '') + w; trim(); await wait(55); }
+      m.querySelector('.caret').remove(); await wait(350);
+    }
+    function chart() {
+      const v = [60, 62.5, 65, 67.5], x = i => 18 + i * 76, y = k => 70 - (k - 55) * 4.2;
+      const d = v.map((k, i) => `${i ? 'L' : 'M'}${x(i)},${y(k)}`).join(' ');
+      el('cchart', `<div class="ttl">Barbell Back Squat — Top set</div>
+        <svg viewBox="0 0 260 86">${[60, 65, 70].map(k => `<line class="gl" x1="14" x2="250" y1="${y(k)}" y2="${y(k)}"/><text x="0" y="${y(k) + 3}">${k}</text>`).join('')}
+        <path class="ln" d="${d}" pathLength="1"/>${v.map((k, i) => `<circle class="pt" cx="${x(i)}" cy="${y(k)}" r="3.4" style="animation-delay:${.3 + i * .35}s"/>`).join('')}</svg>
+        <div class="up">▲ 60 → 67.5 kg · last 4 sessions</div>`);
+    }
+    async function proposal() {
+      const c = el('card-x', `<div class="h">✦ PROPOSED PLAN CHANGE</div><div class="ttl">Bump Barbell Bent Over Row to 50kg</div><div class="meta">Monday · 4 × 10</div>
+        <div class="btns"><span class="apply">Apply</span><span>Dismiss</span></div><div class="done"><i>✓</i>Applied to your plan</div>`);
+      await wait(1500);
+      const a = c.querySelector('.apply'), r = document.createElement('i'); r.className = 'ripple';
+      r.style.left = '45%'; r.style.top = '35%'; a.appendChild(r); a.classList.add('press');
+      await wait(220); a.classList.remove('press'); await wait(380);
+      c.classList.add('applied'); trim(); await wait(700);
+    }
+    async function chips(list) { const c = el('chips2', ''); for (const t of list) { const s = document.createElement('span'); s.textContent = t; c.appendChild(s); await wait(160); } }
+
+    async function play() {
+      if (running) return; running = true;
+      while (alive) {
+        feed.innerHTML = ''; await until();
+        await ask('Am I making progress on my main lifts?');
+        await reply("You're making great progress on your main lifts, Alex! Keep pushing yourself.");
+        chart(); await wait(2600); await until();
+        await ask('Suggest a tweak to my plan');
+        await reply("I've suggested bumping your Barbell Bent Over Row on Monday to 4 sets of 10 reps at 50kg. Tap Apply to confirm.");
+        await proposal();
+        await chips(["How's my deadlift trending?", 'Suggest another tweak', 'Show my full plan']);
+        await wait(4200);
+        feed.style.transition = 'opacity .5s'; feed.style.opacity = 0; await wait(550); feed.style.opacity = 1;
+      }
+    }
+    if (reduce) { // static, finished conversation
+      el('msg me', 'Suggest a tweak to my plan');
+      el('msg bot', "I've suggested bumping your Barbell Bent Over Row on Monday to 4 sets of 10 reps at 50kg. Tap Apply to confirm.");
+      el('card-x applied', '<div class="h">✦ PROPOSED PLAN CHANGE</div><div class="ttl">Bump Barbell Bent Over Row to 50kg</div><div class="meta">Monday · 4 × 10</div><div class="done"><i>✓</i>Applied to your plan</div>');
+      return;
+    }
+    new IntersectionObserver(es => es.forEach(e => { visible = e.isIntersecting; if (visible) play(); }), { threshold: 0.35 }).observe(chat);
   })();
 
   if (reduce || !fine) return;
